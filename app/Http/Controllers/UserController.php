@@ -18,6 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        header("Access-Control-Allow-Origin: *");
         return User::all();
     }
 
@@ -39,7 +40,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
+        header("Access-Control-Allow-Origin: *");
         //checkeamos si el usuario existe
         $userCheck = User::where('email', $request->email)->first();
 
@@ -77,6 +78,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        header("Access-Control-Allow-Origin: *");
         $user = User::find($id);
 
         if (!$user) {
@@ -113,6 +115,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        header("Access-Control-Allow-Origin: *");
         //checkeamos si user existe
         $user = User::find($id);
 
@@ -144,6 +147,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        header("Access-Control-Allow-Origin: *");
         //checkeamos si existe
         $user = User::find($id);
 
@@ -168,6 +172,7 @@ class UserController extends Controller
      */
 
     public function login(){ 
+        header("Access-Control-Allow-Origin: *");
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('MyApp')-> accessToken; 
@@ -179,6 +184,7 @@ class UserController extends Controller
     }
 
     public function register(Request $request){ 
+        header("Access-Control-Allow-Origin: *");
         $validator = Validator::make($request->all(), [ 
             'name' => 'required',
             'email' => 'required|email', 
@@ -211,6 +217,7 @@ class UserController extends Controller
     } 
     
     public function logoutApi(){ 
+        header("Access-Control-Allow-Origin: *");
         if (Auth::check()) {
         Auth::user()->AauthAcessToken()->delete();
         }
