@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
+use App\Role;
 
-use Illuminate\Support\Facades\Hash;
-
-class UsersController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -37,24 +35,20 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
+        //checkeamos si el rol existe
+        $roleCheck = Role::where('name', $request->name)->first();
 
-        //checkeamos si el usuario existe
-        $userCheck = User::where('email', $request->email)->first();
-
-        if ($userCheck) { //si existe, enviamos error.
+        if ($roleCheck) { //si existe, enviamos error.
             $response = [
-                'resultMessage' => 'Usuario ya existe'
+                'resultMessage' => 'Rol ya existe'
             ];
             $responseCode = 401;
         }else{//si no existe, lo creamos
-            $user = new User;
+            $role = new Role;
 
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = Hash::make($request->password);
-            $user->role = $request->role;
+            $role->name = $request->name;
 
-            $user->save();
+            $role->save();
 
             $response = [
                 'resultMessage' => 'OK'
@@ -75,15 +69,15 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
+        $role = Role::find($id);
 
-        if (!$user) {
+        if (!$role) {
             $response = [
-                'resultMessage' => 'Usuario no existe'
+                'resultMessage' => 'Rol no existe'
             ];
             $responseCode = 404;
         } else {
-            $response = $user;
+            $response = $role;
             $responseCode = 200;
         }
 
@@ -112,21 +106,19 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         //checkeamos si user existe
-        $user = User::find($id);
+        $role = Role::find($id);
 
-        if (!$user) {
+        if (!$role) {
             $response = [
-                'resultMessage' => 'Usuario no existe'
+                'resultMessage' => 'Rol no existe'
             ];
             $responseCode = 404;
         }else{
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = Hash::make($request->password);
-            $user->role = $request->role;
-            $user->save();
+            $role->name = $request->name;
+            
+            $role->save();
             $response = [
-                'resultMessage' => 'Usuario editado correctamente'
+                'resultMessage' => 'Rol editado correctamente'
             ];
             $responseCode = 200;
         }
@@ -143,19 +135,21 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //checkeamos si existe
-        $user = User::find($id);
+        $role = Role::find($id);
 
-        if(!$user){
+        if(!$role){
             $response = [
-                'resultMessage' => 'Usuario no existe.'
+                'resultMessage' => 'Rol no existe.'
             ];
             $responseCode = 404;
         }else{
-            User::destroy($id);
+            Role::destroy($id);
             $response = [
-                'resultMessage' => 'Usuario eliminado.'
+                'resultMessage' => 'Rol eliminado.'
             ];
             $responseCode = 200;
         }
+        return response(json_encode($response), $responseCode)
+                ->header('Content-Type', 'application/json');
     }
 }

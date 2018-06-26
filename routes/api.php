@@ -16,10 +16,18 @@ use App\Http\Controllers\RolesController;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::resource('users', 'UserController');
+
+Route::resource('roles', 'RoleController');
+
+Route::post('login', 'UserController@login');
+Route::post('register', 'UserController@register');
+
+Route::group(['middleware' => 'auth:api'], function(){
+    Route::post('details', 'UserController@details');
+
 });
-
-Route::resource('users', 'UsersController');
-
-Route::resource('roles', 'RolesController');
