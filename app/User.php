@@ -30,11 +30,15 @@ class User extends Authenticatable
 
     protected $dates = [
         'created_at',
-        'modified_at',
+        'updated_at',
         'deleted_at'
     ];
 
     public function roles() {
         return $this->hasMany('App\Role');
+    }
+
+    public function AauthAcessToken(){
+        return $this->hasMany('\App\OauthAccessToken');
     }
 }

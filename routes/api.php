@@ -24,10 +24,12 @@ Route::resource('users', 'UserController');
 
 Route::resource('roles', 'RoleController');
 
-Route::post('login', 'UserController@login');
+Route::post('login', 'UserController@login'); 
 Route::post('register', 'UserController@register');
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', 'UserController@details');
 
 });
+
+Route::post('logout','UserController@logoutApi');

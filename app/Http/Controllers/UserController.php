@@ -180,26 +180,40 @@ class UserController extends Controller
 
     public function register(Request $request){ 
         $validator = Validator::make($request->all(), [ 
-            'name' => 'required', 
-            'email' => 'required|email',
+            'name' => 'required',
+            'email' => 'required|email', 
             'role' => 'required',
-            'password' => 'required', 
-            'c_password' => 'required|same:password', 
+            'password' => 'required'
         ]);
-        if ($validator->fails()) { 
-            return response()->json(['error'=>$validator->errors()], 401);            
-        }
-        $input = $request->all(); 
-        $input['password'] = bcrypt($input['password']); 
-        $user = User::create($input); 
-        $success['token'] =  $user->createToken('MyApp')-> accessToken; 
-        $success['name'] =  $user->name;
 
-        return response()->json(['success'=>$success], 200); 
+        //let's check if email exists
+        $email = User::where('email', $request->email)->first();
+        // dd($email);
+
+        if ($email == NULL) {
+            if ($validator->fails()) { 
+                return response()->json(['error'=>$validator->errors()], 401);            
+            }
+            $input = $request->all(); 
+            $input['password'] = bcrypt($input['password']); 
+            $user = User::create($input); 
+            $success['token'] =  $user->createToken('MyApp')-> accessToken; 
+            $success['name'] =  $user->name;
+            return response()->json(['success'=>$success], 200);
+        } else {
+            return response()->json(['error'=>"InvalidEmail"], 401);
+        }
     }   
 
     public function details(){ 
         $user = Auth::user(); 
         return response()->json(['success' => $user], 200   ); 
     } 
+    
+    public function logoutApi(){ 
+        if (Auth::check()) {
+        Auth::user()->AauthAcessToken()->delete();
+        }
+    }
+
 }
