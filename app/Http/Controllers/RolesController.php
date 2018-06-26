@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Role;
 
 class RolesController extends Controller
 {
@@ -34,7 +35,30 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //checkeamos si el rol existe
+        $roleCheck = Role::where('name', $request->name)->first();
+
+        if ($roleCheck) { //si existe, enviamos error.
+            $response = [
+                'resultMessage' => 'Rol ya existe'
+            ];
+            $responseCode = 401;
+        }else{//si no existe, lo creamos
+            $role = new Role;
+
+            $role->name = $request->name;
+
+            $role->save();
+
+            $response = [
+                'resultMessage' => 'OK'
+            ];
+            $responseCode = 200;
+        }
+
+
+        return response(json_encode($response), $responseCode)
+                ->header('Content-Type', 'application/json');
     }
 
     /**
@@ -45,7 +69,20 @@ class RolesController extends Controller
      */
     public function show($id)
     {
-        //
+        $role = Role::find($id);
+
+        if (!$role) {
+            $response = [
+                'resultMessage' => 'Rol no existe'
+            ];
+            $responseCode = 404;
+        } else {
+            $response = $role;
+            $responseCode = 200;
+        }
+
+        return response($response, $responseCode)
+                ->header('Content-Type', 'application/json');
     }
 
     /**
@@ -68,7 +105,25 @@ class RolesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //checkeamos si user existe
+        $role = Role::find($id);
+
+        if (!$role) {
+            $response = [
+                'resultMessage' => 'Rol no existe'
+            ];
+            $responseCode = 404;
+        }else{
+            $role->name = $request->name;
+            
+            $role->save();
+            $response = [
+                'resultMessage' => 'Rol editado correctamente'
+            ];
+            $responseCode = 200;
+        }
+        return response(json_encode($response), $responseCode)
+                ->header('Content-Type', 'application/json');
     }
 
     /**
@@ -79,6 +134,20 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //checkeamos si existe
+        $role = Role::find($id);
+
+        if(!$role){
+            $response = [
+                'resultMessage' => 'Rol no existe.'
+            ];
+            $responseCode = 404;
+        }else{
+            Role::destroy($id);
+            $response = [
+                'resultMessage' => 'Rol eliminado.'
+            ];
+            $responseCode = 200;
+        }
     }
 }

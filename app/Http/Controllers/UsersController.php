@@ -77,7 +77,17 @@ class UsersController extends Controller
     {
         $user = User::find($id);
 
-        return response($user, 200)
+        if (!$user) {
+            $response = [
+                'resultMessage' => 'Usuario no existe'
+            ];
+            $responseCode = 404;
+        } else {
+            $response = $user;
+            $responseCode = 200;
+        }
+
+        return response($response, $responseCode)
                 ->header('Content-Type', 'application/json');
     }
 
@@ -108,7 +118,7 @@ class UsersController extends Controller
             $response = [
                 'resultMessage' => 'Usuario no existe'
             ];
-            $responseCode = 401;
+            $responseCode = 404;
         }else{
             $user->name = $request->name;
             $user->email = $request->email;
@@ -139,7 +149,7 @@ class UsersController extends Controller
             $response = [
                 'resultMessage' => 'Usuario no existe.'
             ];
-            $responseCode = 401;
+            $responseCode = 404;
         }else{
             User::destroy($id);
             $response = [
