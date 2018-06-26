@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+
+use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
@@ -34,7 +37,34 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        //checkeamos si el usuario existe
+        $userCheck = User::where('email', $request->email)->first();
+
+        if ($userCheck) { //si existe, enviamos error.
+            $response = [
+                'resultMessage' => 'Usuario ya existe'
+            ];
+            $responseCode = 401;
+        }else{//si no existe, lo creamos
+            $user = new User;
+
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->role = $request->role;
+
+            $user->save();
+
+            $response = [
+                'resultMessage' => 'OK'
+            ];
+            $responseCode = 200;
+        }
+
+
+        return response(json_encode($response), $responseCode)
+                ->header('Content-Type', 'application/json');
     }
 
     /**
@@ -45,7 +75,10 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::find($id);
+
+        return response($user, 200)
+                ->header('Content-Type', 'application/json');
     }
 
     /**
@@ -68,7 +101,27 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //checkeamos si user existe
+        $user = User::find($id);
+
+        if (!$user) {
+            $response = [
+                'resultMessage' => 'Usuario no existe'
+            ];
+            $responseCode = 401;
+        }else{
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->role = $request->role;
+            $user->save();
+            $response = [
+                'resultMessage' => 'Usuario editado correctamente'
+            ];
+            $responseCode = 200;
+        }
+        return response(json_encode($response), $responseCode)
+                ->header('Content-Type', 'application/json');
     }
 
     /**
@@ -79,6 +132,20 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //checkeamos si existe
+        $user = User::find($id);
+
+        if(!$user){
+            $response = [
+                'resultMessage' => 'Usuario no existe.'
+            ];
+            $responseCode = 401;
+        }else{
+            User::destroy($id);
+            $response = [
+                'resultMessage' => 'Usuario eliminado.'
+            ];
+            $responseCode = 200;
+        }
     }
 }
