@@ -13,4 +13,8 @@ class OauthAccessToken extends Model
     protected $dates = [
         'created_at', 'updated_at', 'expires_at'
     ];
+
+    public function User(){
+        return $this->belongsTo('\App\User');
+    }
 }
