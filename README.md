@@ -56,3 +56,7 @@ php artisan passport:keys
 Lo mas importante... para iniciar el server:
 
 `php artisan serve`
+
+Para ver los endpoint disponibles, usar el siguiente comando:
+
+`php artisan route:list`
