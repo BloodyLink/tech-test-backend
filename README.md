@@ -4,7 +4,7 @@ Al clonar repositorio, se debe habilitar para la maquina destino de la siguiente
 
 ### Requisitos:
 
-Composer, Mysql.
+Composer, Mysql, PHP 7.1+.
 
 Comandos:
 
